@@ -564,6 +564,7 @@ function startLevel(n) {
   hideOverlay();
   updateHud();
   cgStart();
+  try { if (typeof sdk !== "undefined" && sdk.showBanner) sdk.showBanner(); } catch (e) {}
 }
 function restartLevel() {
   if (screenName !== "game") return;
@@ -577,6 +578,7 @@ function restartLevel() {
   updateHud();
   SFX.click();
   cgStart();
+  try { if (typeof sdk !== "undefined" && sdk.showBanner) sdk.showBanner(); } catch (e) {}
 }
 function updateHud() {
   document.getElementById("stMoves").textContent = moves;
