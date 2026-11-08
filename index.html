@@ -639,7 +639,7 @@ function updateHud() {
   document.getElementById("btnUndo").disabled = undoStack.length === 0 || phase !== "PLAY";
   var bp = document.getElementById("btnPlus");
   bp.disabled = plusOneUsed || phase !== "PLAY";
-  bp.innerHTML = plusOneUsed ? "TUBE +1 &#10003;" : "TUBE +1";
+  bp.innerHTML = plusOneUsed ? "加一根 &#10003;" : "加一根";
 }
 function undo() {
   if (screenName !== "game" || phase !== "PLAY" || anim || !undoStack.length) return;
@@ -741,7 +741,7 @@ function showWinPanel(stars, isNewBest) {
   var b = progress.best[levelNum];
   document.getElementById("ovText").innerHTML =
     "步数 <b>" + moves + "</b> &nbsp;&#183;&nbsp; 目标 <b>" + par + "</b>" +
-    (b ? " &nbsp;&#183;&nbsp; Best: <b>" + b + "</b>" : "");
+    (b ? " &nbsp;&#183;&nbsp; 最佳 <b>" + b + "</b>" : "");
   var nextBtn = document.getElementById("btnNext");
   if (levelNum >= MAX_LEVEL) nextBtn.classList.add("hide");
   else nextBtn.classList.remove("hide");
