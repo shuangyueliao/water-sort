@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta name="description" content="Water Sort — pour colored liquids between glass tubes and unite every color. 40 verified levels, unlimited undo, relaxing logic puzzle. Free single-file HTML5 game.">
-<title>Water Sort · Liquid Sorting Puzzle</title>
+<meta name="description" content="水滴排序 — 在玻璃试管间倾倒彩色液体，把每种颜色聚齐。40 个经验证的关卡，无限撤销，放松的逻辑解谜。免费单文件 HTML5 小游戏。">
+<title>水滴排序 · 液体排序解谜</title>
 <script>
 // 平台 SDK 按域名条件加载（独立运行时完全不加载，游戏行为不变）
 (function () {
@@ -165,51 +165,51 @@ window.SDK_OPTIONS = {
 <!-- 关卡选择 -->
 <div class="screen active" id="scrSelect">
   <div id="selHead">
-    <div id="selTitle">WATER <em>SORT</em></div>
-    <button class="muteBtn" id="btnMute1">SOUND: ON</button>
-    <button class="iconBtn" id="btnInfo1" title="How to play">&#8505;</button>
+    <div id="selTitle">水滴 <em>排序</em></div>
+    <button class="muteBtn" id="btnMute1">音效: 开</button>
+    <button class="iconBtn" id="btnInfo1" title="玩法说明">&#8505;</button>
     <button class="iconBtn" id="btnSettings1" title="Settings">&#9881;&#65039;</button>
   </div>
   <div id="tagline">
-    Tap a tube to lift it, tap another to pour. Liquids only stack on the
-    <b>same color</b> or an <b>empty tube</b> — unite every color to cap the
-    tube and win. Finish in <span class="grn">PAR</span> moves for 3 stars.
+    点一下试管把它拿起，再点另一根倒过去。液体只能倒在
+    <b>相同颜色</b>或<b>空管</b>上 —— 把每种颜色聚齐封盖即过关。
+    步数不超过 <span class="grn">目标</span> 可得 3 星。
   </div>
   <div id="lvGrid"></div>
-  <div id="selFoot">Water Sort — a free liquid sorting puzzle</div>
+  <div id="selFoot">水滴排序 — 免费液体排序解谜</div>
 </div>
 
 <!-- 对局 -->
 <div class="screen" id="scrGame">
   <div id="hud">
-    <button id="btnBack">&#8249; LEVELS</button>
-    <div id="lvTitle">LEVEL 1</div>
-    <div class="stat"><div class="label">MOVES</div><div class="val" id="stMoves">0</div></div>
-    <div class="stat"><div class="label">PAR</div><div class="val" id="stPar">0</div></div>
-    <div class="stat"><div class="label">BEST</div><div class="val" id="stBest">&#8212;</div></div>
-    <button id="btnMute2">ON</button>
+    <button id="btnBack">&#8249; 关卡</button>
+    <div id="lvTitle">第 1 关</div>
+    <div class="stat"><div class="label">步数</div><div class="val" id="stMoves">0</div></div>
+    <div class="stat"><div class="label">目标</div><div class="val" id="stPar">0</div></div>
+    <div class="stat"><div class="label">最佳</div><div class="val" id="stBest">&#8212;</div></div>
+    <button id="btnMute2">开</button>
     <button id="btnSettings2" title="Settings">&#9881;&#65039;</button>
   </div>
   <div id="stage">
     <canvas id="game" width="480" height="440"></canvas>
     <div id="overlay"><div id="panel">
-      <h2 id="ovTitle">Level Complete!</h2>
+      <h2 id="ovTitle">过关！</h2>
       <div id="ovStars"></div>
       <div id="ovNew"></div>
       <div id="ovText"></div>
       <div class="btns">
-        <button id="btnNext">Next Level</button>
-        <button id="btnReplay">Replay</button>
-        <button id="btnLevels">Level Select</button>
+        <button id="btnNext">下一关</button>
+        <button id="btnReplay">再玩一次</button>
+        <button id="btnLevels">选关</button>
       </div>
     </div></div>
   </div>
   <div id="btnRow">
-    <button id="btnUndo">UNDO</button>
-    <button id="btnRestart">RESTART</button>
-    <button id="btnPlus">TUBE +1</button>
+    <button id="btnUndo">撤销</button>
+    <button id="btnRestart">重开</button>
+    <button id="btnPlus">加一根</button>
   </div>
-  <div id="gfooter">Water Sort — a free liquid sorting puzzle</div>
+  <div id="gfooter">水滴排序 — 免费液体排序解谜</div>
 </div>
 
 <audio id="bgm" src="bgm.mp3" loop preload="auto"></audio>
@@ -217,13 +217,13 @@ window.SDK_OPTIONS = {
 <!-- 设置（音乐/音效独立音量） -->
 <div class="modal" id="mSettings">
   <div class="mbox">
-    <h3>Settings</h3>
-    <div class="mrow"><label>Music</label><input type="range" id="rgMusic" min="0" max="100" value="60"><span id="vMusic">60</span></div>
-    <div class="mrow"><label>Sound FX</label><input type="range" id="rgSfx" min="0" max="100" value="90"><span id="vSfx">90</span></div>
+    <h3>设置</h3>
+    <div class="mrow"><label>音乐</label><input type="range" id="rgMusic" min="0" max="100" value="60"><span id="vMusic">60</span></div>
+    <div class="mrow"><label>音效</label><input type="range" id="rgSfx" min="0" max="100" value="90"><span id="vSfx">90</span></div>
     <div class="mbtns">
-      <button id="btnHowPlay">How to play</button>
-      <button id="btnReset" class="danger">Reset progress</button>
-      <button id="btnCloseSettings">Close</button>
+      <button id="btnHowPlay">玩法说明</button>
+      <button id="btnReset" class="danger">重置进度</button>
+      <button id="btnCloseSettings">关闭</button>
     </div>
   </div>
 </div>
@@ -231,11 +231,11 @@ window.SDK_OPTIONS = {
 <!-- 玩法说明 -->
 <div class="modal" id="mInfo">
   <div class="mbox">
-    <h3>How to play</h3>
-    <p>Tap a tube to lift it, tap another to pour.</p>
-    <p>Liquids only stack on the <b>same color</b> or an <b>empty tube</b> — unite every color to cap the tube and win.</p>
-    <p>Finish in <b>PAR</b> moves or fewer for 3 stars. UNDO takes back one move; TUBE +1 adds an extra tube when you are stuck.</p>
-    <div class="mbtns"><button id="btnCloseInfo">Close</button></div>
+    <h3>玩法说明</h3>
+    <p>点一下试管把它拿起，再点另一根倒过去。</p>
+    <p>液体只能倒在<b>相同颜色</b>或<b>空管</b>上 —— 把每种颜色聚齐封盖即过关。</p>
+    <p>步数不超过<b>目标</b>可得 3 星。「撤销」悔一步；卡住时用「加一根」多要一根试管。</p>
+    <div class="mbtns"><button id="btnCloseInfo">关闭</button></div>
   </div>
 </div>
 
@@ -611,7 +611,7 @@ function startLevel(n) {
   screenName = "game";
   layoutTubes(tubes.length);
   setScreen("game");
-  document.getElementById("lvTitle").textContent = "LEVEL " + n;
+  document.getElementById("lvTitle").textContent = "第 " + n + " 关";
   hideOverlay();
   updateHud();
   cgStart();
@@ -734,13 +734,13 @@ function showWinPanel(stars, isNewBest) {
   var html = "";
   for (var s = 1; s <= 3; s++) html += '<span class="' + (s <= stars ? "on" : "off") + '">&#9733;</span>';
   document.getElementById("ovStars").innerHTML = html;
-  document.getElementById("ovNew").textContent = isNewBest ? "NEW BEST!" : "";
+  document.getElementById("ovNew").textContent = isNewBest ? "新纪录！" : "";
   var title = document.getElementById("ovTitle");
-  if (levelNum >= MAX_LEVEL) title.textContent = "All Levels Clear!";
-  else title.textContent = "Level Complete!";
+  if (levelNum >= MAX_LEVEL) title.textContent = "全部通关！";
+  else title.textContent = "过关！";
   var b = progress.best[levelNum];
   document.getElementById("ovText").innerHTML =
-    "Moves: <b>" + moves + "</b> &nbsp;&#183;&nbsp; Par: <b>" + par + "</b>" +
+    "步数 <b>" + moves + "</b> &nbsp;&#183;&nbsp; 目标 <b>" + par + "</b>" +
     (b ? " &nbsp;&#183;&nbsp; Best: <b>" + b + "</b>" : "");
   var nextBtn = document.getElementById("btnNext");
   if (levelNum >= MAX_LEVEL) nextBtn.classList.add("hide");
@@ -799,8 +799,8 @@ document.getElementById("lvGrid").addEventListener("click", function (e) {
 // ---------- 声音开关 ----------
 function updateMuteLabels() {
   var on = !progress.muted;
-  document.getElementById("btnMute1").textContent = on ? "SOUND: ON" : "SOUND: OFF";
-  document.getElementById("btnMute2").textContent = on ? "ON" : "OFF";
+  document.getElementById("btnMute1").textContent = on ? "音效: 开" : "音效: 关";
+  document.getElementById("btnMute2").textContent = on ? "开" : "关";
 }
 function toggleMute() {
   progress.muted = !progress.muted;
