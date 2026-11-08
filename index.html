@@ -116,6 +116,24 @@
   #btnReplay, #btnLevels { background:#eef3f9; color:#5a6b80; border:1px solid #d3deec; }
   #btnReplay:active, #btnLevels:active { transform:scale(.97); }
   .hide { display:none !important; }
+  /* 设置 / 说明弹窗（GM 质量标准：Settings + Info + 独立音量） */
+  .iconBtn { background:#ffffff; color:#5a6b80; border:1px solid #c9d5e4; border-radius:10px; width:34px; height:30px; margin-left:6px; font-size:13px; font-weight:800; cursor:pointer; box-shadow:0 1px 3px rgba(90,110,140,.14); }
+  .iconBtn:active { transform:scale(.95); }
+  #btnSettings2 { background:#ffffff; color:#5a6b80; border:1px solid #c9d5e4; border-radius:10px; padding:7px 9px; font-size:12px; font-weight:800; cursor:pointer; margin-left:8px; box-shadow:0 1px 3px rgba(90,110,140,.14); }
+  .modal { position:fixed; inset:0; background:rgba(28,44,70,.45); display:none; align-items:center; justify-content:center; z-index:60; }
+  .modal.open { display:flex; }
+  .mbox { background:#fff; border-radius:16px; padding:20px 22px; width:min(340px, 88vw); box-shadow:0 18px 50px rgba(40,60,100,.28); animation:winpop .2s ease-out; }
+  .mbox h3 { margin:0 0 6px; color:#2f6fe8; font-size:16px; letter-spacing:.5px; }
+  .mbox p { font-size:12.5px; line-height:1.7; color:#51617a; margin:8px 0; }
+  .mrow { display:flex; align-items:center; gap:10px; margin:14px 0; }
+  .mrow label { width:74px; font-size:12px; font-weight:700; color:#5a6b80; }
+  .mrow input[type=range] { flex:1; accent-color:#2f6fe8; }
+  .mrow span { width:30px; text-align:right; font-size:12px; color:#8296ad; font-weight:700; }
+  .mbtns { display:flex; gap:8px; margin-top:16px; flex-wrap:wrap; }
+  .mbtns button { flex:1; border:1px solid #c9d5e4; background:#f4f8fc; color:#3d5170; border-radius:10px; padding:9px 6px; font-weight:700; font-size:12px; cursor:pointer; }
+  .mbtns button.danger { background:#fff1f0; color:#d0453c; border-color:#f0c8c4; }
+  @keyframes winpop { from { transform:scale(.92); opacity:.55; } to { transform:scale(1); opacity:1; } }
+  #overlay #panel { animation:winpop .22s ease-out; }
 </style>
 <script>
 /* GameMonetize SDK（gameId: brhg9kbln8tiznjxal00kcl92qoktebx）*/
@@ -125,11 +143,11 @@ window.SDK_OPTIONS = {
     switch (a.name) {
       case "SDK_GAME_PAUSE":
         /* 广告播放前：静音 */
-        try { window.__gmForceMute = true; if (typeof progress !== "undefined") progress.muted = true; } catch (e) {}
+        try { window.__gmForceMute = true; try { window.__wsApplyAdMute && window.__wsApplyAdMute(true); } catch (e3) {} } catch (e) {}
         break;
       case "SDK_GAME_START":
         /* 广告结束：恢复游戏声音设置 */
-        try { window.__gmForceMute = false; if (typeof progress !== "undefined") { try { var _p = JSON.parse(localStorage.getItem("ws_progress") || "{}"); progress.muted = !!(_p && _p.muted); } catch (e2) {} } } catch (e) {}
+        try { window.__gmForceMute = false; try { window.__wsApplyAdMute && window.__wsApplyAdMute(false); } catch (e4) {} } catch (e) {}
         break;
       case "SDK_READY":
         break;
@@ -149,6 +167,8 @@ window.SDK_OPTIONS = {
   <div id="selHead">
     <div id="selTitle">WATER <em>SORT</em></div>
     <button class="muteBtn" id="btnMute1">SOUND: ON</button>
+    <button class="iconBtn" id="btnInfo1" title="How to play">&#8505;</button>
+    <button class="iconBtn" id="btnSettings1" title="Settings">&#9881;&#65039;</button>
   </div>
   <div id="tagline">
     Tap a tube to lift it, tap another to pour. Liquids only stack on the
@@ -168,6 +188,7 @@ window.SDK_OPTIONS = {
     <div class="stat"><div class="label">PAR</div><div class="val" id="stPar">0</div></div>
     <div class="stat"><div class="label">BEST</div><div class="val" id="stBest">&#8212;</div></div>
     <button id="btnMute2">ON</button>
+    <button id="btnSettings2" title="Settings">&#9881;&#65039;</button>
   </div>
   <div id="stage">
     <canvas id="game" width="480" height="440"></canvas>
@@ -190,6 +211,34 @@ window.SDK_OPTIONS = {
   </div>
   <div id="gfooter">Water Sort — a free liquid sorting puzzle</div>
 </div>
+
+<audio id="bgm" src="bgm.mp3" loop preload="auto"></audio>
+
+<!-- 设置（音乐/音效独立音量） -->
+<div class="modal" id="mSettings">
+  <div class="mbox">
+    <h3>Settings</h3>
+    <div class="mrow"><label>Music</label><input type="range" id="rgMusic" min="0" max="100" value="60"><span id="vMusic">60</span></div>
+    <div class="mrow"><label>Sound FX</label><input type="range" id="rgSfx" min="0" max="100" value="90"><span id="vSfx">90</span></div>
+    <div class="mbtns">
+      <button id="btnHowPlay">How to play</button>
+      <button id="btnReset" class="danger">Reset progress</button>
+      <button id="btnCloseSettings">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- 玩法说明 -->
+<div class="modal" id="mInfo">
+  <div class="mbox">
+    <h3>How to play</h3>
+    <p>Tap a tube to lift it, tap another to pour.</p>
+    <p>Liquids only stack on the <b>same color</b> or an <b>empty tube</b> — unite every color to cap the tube and win.</p>
+    <p>Finish in <b>PAR</b> moves or fewer for 3 stars. UNDO takes back one move; TUBE +1 adds an extra tube when you are stuck.</p>
+    <div class="mbtns"><button id="btnCloseInfo">Close</button></div>
+  </div>
+</div>
+
 
 <script>
 "use strict";
@@ -396,7 +445,7 @@ var PALETTE = ["#e5484d", "#3d7bf0", "#2fa96e", "#f0b429", "#8f5bdb", "#ef7f2f",
 var MAX_LEVEL = 40;
 
 // ---------- 进度（localStorage，全部 try/catch） ----------
-var progress = { unlocked: 1, best: {}, stars: {}, muted: false };
+var progress = { unlocked: 1, best: {}, stars: {}, muted: false, sfxVol: 0.9, musicVol: 0.6 };
 function loadProgress() {
   try {
     var raw = localStorage.getItem("ws_v1");
@@ -407,6 +456,8 @@ function loadProgress() {
         progress.best = (p.best && typeof p.best === "object") ? p.best : {};
         progress.stars = (p.stars && typeof p.stars === "object") ? p.stars : {};
         progress.muted = !!p.muted;
+        if (typeof p.sfxVol === "number") progress.sfxVol = Math.max(0, Math.min(1, p.sfxVol));
+        if (typeof p.musicVol === "number") progress.musicVol = Math.max(0, Math.min(1, p.musicVol));
       }
     }
   } catch (e) {}
@@ -433,7 +484,7 @@ function tone(f0, f1, dur, type, gainv, when) {
     o.type = type || "sine";
     o.frequency.setValueAtTime(Math.max(1, f0), t0);
     if (f1 !== f0) o.frequency.exponentialRampToValueAtTime(Math.max(1, f1), t0 + dur);
-    g.gain.setValueAtTime(gainv || 0.1, t0);
+    g.gain.setValueAtTime((gainv || 0.1) * (progress.sfxVol != null ? progress.sfxVol : 0.9), t0);
     g.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
     o.connect(g); g.connect(actx.destination);
     o.start(t0); o.stop(t0 + dur + 0.02);
@@ -755,10 +806,75 @@ function toggleMute() {
   progress.muted = !progress.muted;
   saveProgress();
   updateMuteLabels();
-  if (!progress.muted) { ensureAudio(); SFX.click(); }
+  applyVolumes();
+  if (!progress.muted) {
+    ensureAudio(); SFX.click();
+    if (bgmEl && bgmStarted && (progress.musicVol || 0) > 0) { var p = bgmEl.play(); if (p && p.catch) p.catch(function () {}); }
+  }
 }
 document.getElementById("btnMute1").addEventListener("click", toggleMute);
 document.getElementById("btnMute2").addEventListener("click", toggleMute);
+
+// ---------- 设置 / 玩法说明 / 背景音乐（GM 质量标准） ----------
+var bgmEl = document.getElementById("bgm");
+var bgmStarted = false;
+function applyVolumes() {
+  var mv = progress.muted ? 0 : (typeof progress.musicVol === "number" ? progress.musicVol : 0.6);
+  if (bgmEl) bgmEl.volume = Math.max(0, Math.min(1, mv * 0.55));
+  if (progress.muted && bgmEl && !bgmEl.paused) bgmEl.pause();
+  var rgM = document.getElementById("rgMusic"), rgS = document.getElementById("rgSfx");
+  if (rgM) { rgM.value = Math.round((progress.musicVol || 0) * 100); document.getElementById("vMusic").textContent = rgM.value; }
+  if (rgS) { rgS.value = Math.round((progress.sfxVol == null ? 0.9 : progress.sfxVol) * 100); document.getElementById("vSfx").textContent = rgS.value; }
+}
+function startBgm() {
+  if (bgmStarted || !bgmEl) return;
+  bgmStarted = true;
+  applyVolumes();
+  if (!progress.muted && (progress.musicVol || 0) > 0) {
+    var p = bgmEl.play(); if (p && p.catch) p.catch(function () {});
+  }
+}
+window.addEventListener("pointerdown", startBgm, { once: true });
+window.addEventListener("keydown", startBgm, { once: true });
+
+function openModal(id) { var el = document.getElementById(id); if (el) el.classList.add("open"); }
+function closeModal(id) { var el = document.getElementById(id); if (el) el.classList.remove("open"); }
+function bindTap(id, fn) { var el = document.getElementById(id); if (el) el.addEventListener("click", function (e) { e.stopPropagation(); fn(); }); }
+bindTap("btnSettings1", function () { applyVolumes(); openModal("mSettings"); ensureAudio(); SFX.click(); });
+bindTap("btnSettings2", function () { applyVolumes(); openModal("mSettings"); ensureAudio(); SFX.click(); });
+bindTap("btnInfo1", function () { openModal("mInfo"); SFX.click(); });
+bindTap("btnCloseSettings", function () { closeModal("mSettings"); SFX.click(); });
+bindTap("btnCloseInfo", function () { closeModal("mInfo"); SFX.click(); });
+bindTap("btnHowPlay", function () { closeModal("mSettings"); openModal("mInfo"); SFX.click(); });
+bindTap("btnReset", function () {
+  progress.unlocked = 1; progress.best = {}; progress.stars = {};
+  saveProgress(); buildGrid(); closeModal("mSettings"); ensureAudio(); SFX.undo();
+});
+(function () {
+  var rgM = document.getElementById("rgMusic");
+  if (rgM) rgM.addEventListener("input", function () {
+    progress.musicVol = this.value / 100;
+    document.getElementById("vMusic").textContent = this.value;
+    if (progress.muted && this.value > 0) { progress.muted = false; updateMuteLabels(); }
+    saveProgress(); applyVolumes();
+    if (bgmEl && bgmEl.paused && !progress.muted && progress.musicVol > 0) { var p = bgmEl.play(); if (p && p.catch) p.catch(function () {}); }
+  });
+  var rgS = document.getElementById("rgSfx");
+  if (rgS) rgS.addEventListener("input", function () {
+    progress.sfxVol = this.value / 100;
+    document.getElementById("vSfx").textContent = this.value;
+    if (progress.muted && this.value > 0) { progress.muted = false; updateMuteLabels(); }
+    saveProgress(); applyVolumes(); ensureAudio(); SFX.click();
+  });
+})();
+// 广告静音钩子（由 SDK onEvent 调用）：广告期间暂停 BGM，结束后按用户设置恢复
+window.__wsApplyAdMute = function (on) {
+  if (on) { if (bgmEl && !bgmEl.paused) bgmEl.pause(); return; }
+  loadProgress(); updateMuteLabels(); applyVolumes();
+  if (bgmEl && bgmStarted && !progress.muted && (progress.musicVol || 0) > 0) {
+    var p = bgmEl.play(); if (p && p.catch) p.catch(function () {});
+  }
+};
 
 // ---------- 特效粒子 ----------
 function spawnDroplets(x, y, color, n) {
